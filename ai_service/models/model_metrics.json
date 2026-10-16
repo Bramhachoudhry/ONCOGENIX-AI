@@ -1,0 +1,338 @@
+{
+  "selected_model": "GradientBoosting",
+  "feature_count": 40,
+  "classes": [
+    "BRCA",
+    "COADREAD",
+    "LUAD",
+    "PAAD"
+  ],
+  "baseline_majority": {
+    "accuracy": 0.4444,
+    "macro_f1": 0.1538
+  },
+  "top_predictive_features": [
+    [
+      "APC",
+      0.3377
+    ],
+    [
+      "KRAS",
+      0.1666
+    ],
+    [
+      "KEAP1",
+      0.0932
+    ],
+    [
+      "PIK3CA",
+      0.0535
+    ],
+    [
+      "BRAF",
+      0.0416
+    ],
+    [
+      "EGFR",
+      0.0387
+    ],
+    [
+      "STK11",
+      0.0337
+    ],
+    [
+      "TP53",
+      0.0244
+    ],
+    [
+      "CDKN2A",
+      0.0227
+    ],
+    [
+      "NF1",
+      0.0211
+    ],
+    [
+      "CDH1",
+      0.0207
+    ],
+    [
+      "GATA3",
+      0.0188
+    ],
+    [
+      "SMAD4",
+      0.0142
+    ],
+    [
+      "CTNNB1",
+      0.0116
+    ],
+    [
+      "ATM",
+      0.0103
+    ]
+  ],
+  "evaluation": {
+    "accuracy": 0.784,
+    "balanced_accuracy": 0.714,
+    "macro_precision": 0.7732,
+    "macro_recall": 0.714,
+    "macro_f1": 0.7351,
+    "per_class": {
+      "BRCA": {
+        "precision": 0.7667,
+        "recall": 0.9583,
+        "f1": 0.8519,
+        "support": 216
+      },
+      "COADREAD": {
+        "precision": 0.8817,
+        "recall": 0.6891,
+        "f1": 0.7736,
+        "support": 119
+      },
+      "LUAD": {
+        "precision": 0.7778,
+        "recall": 0.614,
+        "f1": 0.6863,
+        "support": 114
+      },
+      "PAAD": {
+        "precision": 0.6667,
+        "recall": 0.5946,
+        "f1": 0.6286,
+        "support": 37
+      }
+    },
+    "confusion_matrix": [
+      [
+        207,
+        1,
+        8,
+        0
+      ],
+      [
+        24,
+        82,
+        9,
+        4
+      ],
+      [
+        28,
+        9,
+        70,
+        7
+      ],
+      [
+        11,
+        1,
+        3,
+        22
+      ]
+    ],
+    "classes": [
+      "BRCA",
+      "COADREAD",
+      "LUAD",
+      "PAAD"
+    ]
+  },
+  "all_models": {
+    "LogisticRegression": {
+      "accuracy": 0.7572,
+      "balanced_accuracy": 0.6953,
+      "macro_precision": 0.7145,
+      "macro_recall": 0.6953,
+      "macro_f1": 0.6911,
+      "per_class": {
+        "BRCA": {
+          "precision": 0.7769,
+          "recall": 0.9352,
+          "f1": 0.8487,
+          "support": 216
+        },
+        "COADREAD": {
+          "precision": 0.9,
+          "recall": 0.6807,
+          "f1": 0.7751,
+          "support": 119
+        },
+        "LUAD": {
+          "precision": 0.747,
+          "recall": 0.5439,
+          "f1": 0.6294,
+          "support": 114
+        },
+        "PAAD": {
+          "precision": 0.434,
+          "recall": 0.6216,
+          "f1": 0.5111,
+          "support": 37
+        }
+      },
+      "confusion_matrix": [
+        [
+          202,
+          0,
+          13,
+          1
+        ],
+        [
+          24,
+          81,
+          5,
+          9
+        ],
+        [
+          23,
+          9,
+          62,
+          20
+        ],
+        [
+          11,
+          0,
+          3,
+          23
+        ]
+      ],
+      "classes": [
+        "BRCA",
+        "COADREAD",
+        "LUAD",
+        "PAAD"
+      ]
+    },
+    "RandomForest": {
+      "accuracy": 0.7819,
+      "balanced_accuracy": 0.7172,
+      "macro_precision": 0.7543,
+      "macro_recall": 0.7172,
+      "macro_f1": 0.7252,
+      "per_class": {
+        "BRCA": {
+          "precision": 0.7715,
+          "recall": 0.9537,
+          "f1": 0.853,
+          "support": 216
+        },
+        "COADREAD": {
+          "precision": 0.913,
+          "recall": 0.7059,
+          "f1": 0.7962,
+          "support": 119
+        },
+        "LUAD": {
+          "precision": 0.7976,
+          "recall": 0.5877,
+          "f1": 0.6768,
+          "support": 114
+        },
+        "PAAD": {
+          "precision": 0.5349,
+          "recall": 0.6216,
+          "f1": 0.575,
+          "support": 37
+        }
+      },
+      "confusion_matrix": [
+        [
+          206,
+          0,
+          10,
+          0
+        ],
+        [
+          25,
+          84,
+          5,
+          5
+        ],
+        [
+          25,
+          7,
+          67,
+          15
+        ],
+        [
+          11,
+          1,
+          2,
+          23
+        ]
+      ],
+      "classes": [
+        "BRCA",
+        "COADREAD",
+        "LUAD",
+        "PAAD"
+      ]
+    },
+    "GradientBoosting": {
+      "accuracy": 0.784,
+      "balanced_accuracy": 0.714,
+      "macro_precision": 0.7732,
+      "macro_recall": 0.714,
+      "macro_f1": 0.7351,
+      "per_class": {
+        "BRCA": {
+          "precision": 0.7667,
+          "recall": 0.9583,
+          "f1": 0.8519,
+          "support": 216
+        },
+        "COADREAD": {
+          "precision": 0.8817,
+          "recall": 0.6891,
+          "f1": 0.7736,
+          "support": 119
+        },
+        "LUAD": {
+          "precision": 0.7778,
+          "recall": 0.614,
+          "f1": 0.6863,
+          "support": 114
+        },
+        "PAAD": {
+          "precision": 0.6667,
+          "recall": 0.5946,
+          "f1": 0.6286,
+          "support": 37
+        }
+      },
+      "confusion_matrix": [
+        [
+          207,
+          1,
+          8,
+          0
+        ],
+        [
+          24,
+          82,
+          9,
+          4
+        ],
+        [
+          28,
+          9,
+          70,
+          7
+        ],
+        [
+          11,
+          1,
+          3,
+          22
+        ]
+      ],
+      "classes": [
+        "BRCA",
+        "COADREAD",
+        "LUAD",
+        "PAAD"
+      ]
+    }
+  }
+}

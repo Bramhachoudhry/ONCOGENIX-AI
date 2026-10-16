@@ -1,0 +1,5 @@
+Hugo_Symbol,Chromosome,Start_Position,End_Position,Reference_Allele,Tumor_Seq_Allele2,Variant_Classification,HGVSp_Short,Tumor_Sample_Barcode,NCBI_Build
+PIK3CA,chr3,178952085,178952085,A,G,Missense_Mutation,p.H1047R,SAMPLE-BRCA-003,GRCh37
+CDH1,chr16,68842686,68842686,C,G,Nonsense_Mutation,p.Y142*,SAMPLE-BRCA-003,GRCh37
+PTEN,chr10,89692904,89692904,G,A,Missense_Mutation,p.R130Q,SAMPLE-BRCA-003,GRCh37
+BRCA1,chr17,41276045,41276045,T,G,Missense_Mutation,p.C61G,SAMPLE-BRCA-003,GRCh37

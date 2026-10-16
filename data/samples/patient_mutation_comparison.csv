@@ -1,0 +1,7 @@
+Patient_ID,Hugo_Symbol,Protein_Change,Variant_Classification,Chromosome,Start_Position,Reference_Allele,Tumor_Seq_Allele2,Genome_Assembly
+PATIENT_01,KRAS,p.G12C,Missense_Mutation,chr12,25398284,C,A,GRCh37
+PATIENT_01,TP53,p.R248W,Missense_Mutation,chr17,7577538,C,T,GRCh37
+PATIENT_01,STK11,p.Q37*,Nonsense_Mutation,chr19,1207062,C,T,GRCh37
+PATIENT_02,KRAS,p.G12C,Missense_Mutation,chr12,25398284,C,A,GRCh37
+PATIENT_02,TP53,p.R175H,Missense_Mutation,chr17,7577120,G,A,GRCh37
+PATIENT_02,EGFR,p.L858R,Missense_Mutation,chr7,55259515,T,G,GRCh37

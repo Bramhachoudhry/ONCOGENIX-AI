@@ -1,0 +1,5 @@
+Hugo_Symbol,Chromosome,Start_Position,End_Position,Reference_Allele,Tumor_Seq_Allele2,Variant_Classification,HGVSp_Short,Tumor_Sample_Barcode,NCBI_Build
+KRAS,chr12,25398284,25398284,C,T,Missense_Mutation,p.G12D,SAMPLE-PAAD-002,GRCh37
+TP53,chr17,7577120,7577120,G,A,Missense_Mutation,p.R175H,SAMPLE-PAAD-002,GRCh37
+SMAD4,chr18,48591873,48591873,G,A,Missense_Mutation,p.R361H,SAMPLE-PAAD-002,GRCh37
+CDKN2A,chr9,21971153,21971153,C,T,Nonsense_Mutation,p.R80*,SAMPLE-PAAD-002,GRCh37

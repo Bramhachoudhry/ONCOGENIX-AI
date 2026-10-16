@@ -1,0 +1,76 @@
+{
+  "source": "cBioPortal REST API (https://www.cbioportal.org/api)",
+  "download_timestamp_utc": "2026-10-16T20:19:20.520510+00:00",
+  "genome_build": "GRCh37 / hg19 (TCGA PanCancer Atlas)",
+  "driver_genes": [
+    "KRAS",
+    "TP53",
+    "EGFR",
+    "STK11",
+    "KEAP1",
+    "BRAF",
+    "PIK3CA",
+    "SMAD4",
+    "CDKN2A",
+    "ARID1A",
+    "APC",
+    "PTEN",
+    "ERBB2",
+    "MET",
+    "ALK",
+    "ROS1",
+    "RET",
+    "CTNNB1",
+    "PIK3R1",
+    "RB1",
+    "BRCA1",
+    "BRCA2",
+    "ATM",
+    "NF1",
+    "FBXW7",
+    "NOTCH1",
+    "FGFR1",
+    "FGFR2",
+    "FGFR3",
+    "IDH1",
+    "IDH2",
+    "CDH1",
+    "GATA3",
+    "MAP2K1",
+    "NRAS",
+    "HRAS",
+    "ERBB3",
+    "SMARCA4",
+    "ESR1",
+    "MTOR"
+  ],
+  "gene_count": 40,
+  "studies": {
+    "LUAD": {
+      "study_id": "luad_tcga_pan_can_atlas_2018",
+      "cancer_type": "Lung Adenocarcinoma",
+      "sample_count": 566,
+      "mutation_records": 1549
+    },
+    "PAAD": {
+      "study_id": "paad_tcga_pan_can_atlas_2018",
+      "cancer_type": "Pancreatic Adenocarcinoma",
+      "sample_count": 184,
+      "mutation_records": 427
+    },
+    "COADREAD": {
+      "study_id": "coadread_tcga_pan_can_atlas_2018",
+      "cancer_type": "Colorectal Adenocarcinoma",
+      "sample_count": 594,
+      "mutation_records": 2627
+    },
+    "BRCA": {
+      "study_id": "brca_tcga_pan_can_atlas_2018",
+      "cancer_type": "Breast Invasive Carcinoma",
+      "sample_count": 1084,
+      "mutation_records": 1597
+    }
+  },
+  "total_samples": 2428,
+  "total_mutations": 6200
+}
