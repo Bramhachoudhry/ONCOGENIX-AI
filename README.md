@@ -2,7 +2,7 @@
 
 > **“Decode the Mutation. Understand the Cancer. Advance Precision Medicine.”**
 
-**ONCOGENIX AI** is an AI-driven precision oncology research platform designed and developed at the Department of Artificial Intelligence & Precision Oncology Research, **Thakur Shyamnarayan College of Engineering, Mumbai**.
+**ONCOGENIX AI** is an AI-driven precision oncology research platform designed and developed at the Department of Artificial Intelligence And Machine Learning , **Thakur Shyamnarayan College of Engineering, Mumbai**.
 
 The platform decodes somatic tumor mutation profiles, analyzes molecular driver patterns, classifies cancer types using supervised machine learning trained on authentic **TCGA PanCancer Atlas** cohorts, connects observed alterations to **CIViC** and **ClinVar** clinical knowledgebases, and generates downloadable patient reports.
 
@@ -23,7 +23,7 @@ ONCOGENIX AI is a research decision-support tool. It clearly distinguishes obser
 ## 2. Institutional Attribution
 
 - **Institution**: Thakur Shyamnarayan College of Engineering, Mumbai
-- **Department**: Department of Computer Engineering / Artificial Intelligence & Precision Oncology Research
+- **Department**: Artificial Intelligence And Machine Learning
 - **Academic Focus**: Machine Learning in Bioinformatics, Clinical Pharmacogenomics & Computational Oncology
 
 ---
