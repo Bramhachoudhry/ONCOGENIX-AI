@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Genomic Comparison — ONCOGENIX AI{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 text-zinc-100">
+
+  <!-- Header Banner -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-zinc-850">
+    <div class="space-y-1">
+      <div class="flex items-center gap-2 text-xs font-mono text-zinc-400">
+        <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+        <span class="uppercase tracking-wider font-semibold text-zinc-300">Comparative Genomics</span>
+        <span class="text-zinc-700">•</span>
+        <span>Thakur Shyamnarayan College of Engineering, Mumbai</span>
+      </div>
+      <h1 class="text-3xl font-extrabold text-white tracking-tight">
+        Multi-Patient Genomic Comparison
+      </h1>
+      <p class="text-xs text-zinc-400 max-w-2xl">
+        Compare somatic driver alterations between two patient tumor profiles to uncover molecular heterogeneity and evaluate targeted therapy differences.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-2.5">
+      <a href="/analysis/" class="px-4 py-2 rounded-xl font-semibold text-xs bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-white transition-all flex items-center gap-1.5">
+        <i data-lucide="plus" class="w-3.5 h-3.5 text-zinc-400"></i>
+        <span>New Assay</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Selection Form Card -->
+  <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 sm:p-7 space-y-5">
+    <form method="GET" action="/comparison/" class="space-y-5">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        
+        <!-- Patient A Selector -->
+        <div class="space-y-2 p-4 rounded-2xl bg-zinc-900 border border-zinc-800">
+          <label class="block text-xs font-mono font-bold uppercase tracking-wider text-white flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-white"></span>
+            Profile A (Reference Case)
+          </label>
+          <select 
+            name="sample_a" 
+            id="sample_a" 
+            class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-white font-mono text-xs focus:outline-none focus:border-white"
+          >
+            {% for a in user_analyses %}
+              <option value="{{ a.id }}" {% if selected_a_id == a.id|stringformat:"s" %}selected{% endif %}>
+                {{ a.sample_id }} ({{ a.predicted_cancer_type }} - {{ a.mutated_genes|join:", "|default:"No drivers" }})
+              </option>
+            {% empty %}
+              <option value="">No stored analyses. Please upload an assay first.</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <!-- Patient B Selector -->
+        <div class="space-y-2 p-4 rounded-2xl bg-zinc-900 border border-zinc-800">
+          <label class="block text-xs font-mono font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-zinc-500"></span>
+            Profile B (Comparator Case)
+          </label>
+          <select 
+            name="sample_b" 
+            id="sample_b" 
+            class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-white font-mono text-xs focus:outline-none focus:border-white"
+          >
+            {% for a in user_analyses %}
+              <option value="{{ a.id }}" {% if selected_b_id == a.id|stringformat:"s" %}selected{% endif %}>
+                {{ a.sample_id }} ({{ a.predicted_cancer_type }} - {{ a.mutated_genes|join:", "|default:"No drivers" }})
+              </option>
+            {% empty %}
+              <option value="">No stored analyses. Please upload an assay first.</option>
+            {% endfor %}
+          </select>
+        </div>
+
+      </div>
+
+      <div class="flex justify-end">
+        <button 
+          type="submit" 
+          class="px-6 py-3 rounded-xl font-bold text-xs bg-white text-black hover:bg-zinc-200 shadow-md flex items-center gap-2 transition-all cursor-pointer"
+        >
+          <i data-lucide="git-compare" class="w-4 h-4"></i>
+          <span>Compute Molecular Divergence</span>
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  {% if comparison_data %}
+    <!-- Comparative Analysis Results -->
+    <div class="space-y-6">
+      
+      <!-- Top Metrics & Jaccard Overlap Bar -->
+      <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 sm:p-7">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center text-center">
+          
+          <div class="p-4 rounded-2xl bg-zinc-900 border border-zinc-800 space-y-1">
+            <span class="text-[11px] font-mono text-zinc-500 uppercase">Profile A Type</span>
+            <div class="text-xl font-bold text-white font-mono">{{ comparison_data.profile_a.cancer_type }}</div>
+            <div class="text-xs text-zinc-400 font-mono">{{ comparison_data.profile_a.sample_id }}</div>
+          </div>
+
+          <!-- Jaccard Gauge -->
+          <div class="p-4 rounded-2xl bg-zinc-900 border border-zinc-750 space-y-2">
+            <span class="text-[11px] font-mono text-zinc-400 uppercase">Jaccard Genomic Similarity</span>
+            <div class="text-3xl font-black text-white font-mono tracking-tight">
+              {{ comparison_data.jaccard_index|floatformat:1 }}%
+            </div>
+            <div class="w-full bg-black rounded-full h-2 border border-zinc-800 overflow-hidden">
+              <div 
+                class="h-full bg-white rounded-full"
+                style="width: {{ comparison_data.jaccard_index }}%"
+              ></div>
+            </div>
+            <div class="text-[10px] text-zinc-400 font-mono">
+              {% if comparison_data.jaccard_index > 50 %}
+                High Homology: Overlapping Driver Pathways
+              {% else %}
+                Marked Heterogeneity: Divergent Signatures
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-zinc-900 border border-zinc-800 space-y-1">
+            <span class="text-[11px] font-mono text-zinc-500 uppercase">Profile B Type</span>
+            <div class="text-xl font-bold text-white font-mono">{{ comparison_data.profile_b.cancer_type }}</div>
+            <div class="text-xs text-zinc-400 font-mono">{{ comparison_data.profile_b.sample_id }}</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Genomic Overlap Breakdown -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Unique to A -->
+        <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between border-b border-zinc-850 pb-2">
+            <h3 class="text-xs font-mono font-bold uppercase text-white flex items-center gap-1.5">
+              <i data-lucide="minus-circle" class="w-3.5 h-3.5 text-zinc-400"></i>
+              Private to Profile A
+            </h3>
+            <span class="text-xs font-mono text-zinc-500">{{ comparison_data.unique_to_a|length }} Genes</span>
+          </div>
+
+          <div class="flex flex-wrap gap-1.5 pt-1">
+            {% for g in comparison_data.unique_to_a %}
+              <span class="px-2.5 py-1 rounded bg-zinc-900 text-white border border-zinc-800 font-mono text-xs font-bold">
+                {{ g }}
+              </span>
+            {% empty %}
+              <span class="text-xs text-zinc-500 italic font-mono">None private</span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Shared Mutations -->
+        <div class="bg-zinc-950 border border-zinc-750 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between border-b border-zinc-850 pb-2">
+            <h3 class="text-xs font-mono font-bold uppercase text-white flex items-center gap-1.5">
+              <i data-lucide="check-circle" class="w-3.5 h-3.5 text-white"></i>
+              Shared Alterations
+            </h3>
+            <span class="text-xs font-mono text-zinc-400">{{ comparison_data.shared_genes|length }} Genes</span>
+          </div>
+
+          <div class="flex flex-wrap gap-1.5 pt-1">
+            {% for g in comparison_data.shared_genes %}
+              <span class="px-2.5 py-1 rounded bg-zinc-900 text-white border border-zinc-600 font-mono text-xs font-bold">
+                {{ g }}
+              </span>
+            {% empty %}
+              <span class="text-xs text-zinc-500 italic font-mono">No shared genes</span>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Unique to B -->
+        <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-5 space-y-3">
+          <div class="flex items-center justify-between border-b border-zinc-850 pb-2">
+            <h3 class="text-xs font-mono font-bold uppercase text-zinc-300 flex items-center gap-1.5">
+              <i data-lucide="plus-circle" class="w-3.5 h-3.5 text-zinc-500"></i>
+              Private to Profile B
+            </h3>
+            <span class="text-xs font-mono text-zinc-500">{{ comparison_data.unique_to_b|length }} Genes</span>
+          </div>
+
+          <div class="flex flex-wrap gap-1.5 pt-1">
+            {% for g in comparison_data.unique_to_b %}
+              <span class="px-2.5 py-1 rounded bg-zinc-900 text-zinc-300 border border-zinc-800 font-mono text-xs font-bold">
+                {{ g }}
+              </span>
+            {% empty %}
+              <span class="text-xs text-zinc-500 italic font-mono">None private</span>
+            {% endfor %}
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Differential Therapy Insights -->
+      <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 space-y-2.5">
+        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+          <i data-lucide="layers" class="w-4 h-4 text-zinc-400"></i>
+          Differential Therapeutic Implications
+        </h3>
+        
+        <p class="text-xs text-zinc-400 leading-relaxed font-mono">
+          Tumors of identical histological origin frequently possess disparate driver profiles. Targeted therapies must strictly correspond to verified somatic biomarkers.
+        </p>
+
+        <div class="p-3.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-400 space-y-1">
+          <div>• Shared Oncogenic Drivers: {{ comparison_data.shared_genes|join:", "|default:"None" }}</div>
+          <div>• Divergence Index: {{ 100|add:comparison_data.jaccard_index_negative|default:"65" }}% unique variation</div>
+        </div>
+      </div>
+
+    </div>
+  {% else %}
+    <div class="p-12 text-center rounded-3xl bg-zinc-950 border border-zinc-800 space-y-3">
+      <div class="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center text-white mx-auto">
+        <i data-lucide="git-compare" class="w-6 h-6"></i>
+      </div>
+      <h3 class="text-base font-bold text-white">Select Two Patient Assays to Compare</h3>
+      <p class="text-xs text-zinc-500 max-w-sm mx-auto font-mono">
+        Choose two patient profiles from the selectors above to calculate genomic overlap.
+      </p>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

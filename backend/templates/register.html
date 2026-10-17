@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+
+{% block title %}Institutional Registration — ONCOGENIX AI{% endblock %}
+
+{% block content %}
+<div class="relative min-h-[calc(100vh-170px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 overflow-hidden bg-black text-zinc-100">
+  
+  <!-- Live Interactive 3D Human Body Background Canvas -->
+  <div class="absolute inset-0 z-0 pointer-events-auto">
+    <canvas id="liveHumanBodyCanvas" class="w-full h-full"></canvas>
+    <!-- Soft Vignette & Subtle Radial Lighting -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent pointer-events-none"></div>
+    <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-white/[0.03] rounded-full blur-[140px] pointer-events-none"></div>
+  </div>
+
+  <div class="relative z-10 w-full max-w-xl space-y-6">
+    
+    <!-- Header with Institutional Badge -->
+    <div class="text-center space-y-2">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-mono tracking-wider uppercase">
+        <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+        INSTITUTIONAL ONBOARDING
+      </div>
+
+      <h1 class="text-3xl font-extrabold text-white tracking-tight">
+        Join Precision Oncology Network
+      </h1>
+      
+      <p class="text-xs text-zinc-400 font-mono">
+        Thakur Shyamnarayan College of Engineering, Mumbai
+      </p>
+    </div>
+
+    <!-- Registration Glass Panel -->
+    <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-7 sm:p-9 shadow-2xl relative overflow-hidden backdrop-blur-2xl">
+      
+      <!-- Top Subtle Hairline Line -->
+      <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-zinc-400 to-transparent"></div>
+
+      {% if error %}
+        <div class="mb-5 p-3.5 rounded-xl bg-zinc-900 border border-zinc-700 text-zinc-200 text-xs flex items-center gap-2.5">
+          <i data-lucide="alert-triangle" class="w-4 h-4 text-white flex-shrink-0"></i>
+          <span>{{ error }}</span>
+        </div>
+      {% endif %}
+
+      <form method="POST" action="/register/" class="space-y-4">
+        {% csrf_token %}
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div class="space-y-1">
+            <label for="username" class="block text-xs font-mono font-semibold uppercase tracking-wider text-zinc-400">
+              Username *
+            </label>
+            <input 
+              type="text" 
+              name="username" 
+              id="username" 
+              required 
+              placeholder="e.g. dr_patel"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all font-mono"
+            >
+          </div>
+
+          <div class="space-y-1">
+            <label for="email" class="block text-xs font-mono font-semibold uppercase tracking-wider text-zinc-400">
+              Email *
+            </label>
+            <input 
+              type="email" 
+              name="email" 
+              id="email" 
+              required 
+              placeholder="user@hospital.edu"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all font-mono"
+            >
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div class="space-y-1">
+            <label for="first_name" class="block text-xs font-mono font-semibold uppercase tracking-wider text-zinc-400">
+              First Name
+            </label>
+            <input 
+              type="text" 
+              name="first_name" 
+              id="first_name" 
+              placeholder="Dr. Rajesh"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-white transition-all font-mono"
+            >
+          </div>
+
+          <div class="space-y-1">
+            <label for="last_name" class="block text-xs font-mono font-semibold uppercase tracking-wider text-zinc-400">
+              Last Name
+            </label>
+            <input 
+              type="text" 
+              name="last_name" 
+              id="last_name" 
+              placeholder="Patel"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-white transition-all font-mono"
+            >
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div class="space-y-1">
+            <label for="role" class="block text-xs font-mono font-semibold uppercase tracking-wider text-zinc-400">
+              Clinical Role
+            </label>
+            <select 
+              name="role" 
+              id="role" 
+              class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white text-xs focus:outline-none focus:border-white transition-all font-mono"
+            >
+              <option value="Oncologist">Medical Oncologist</option>
+              <option value="Pathologist">Molecular Pathologist</option>
+              <option value="Researcher">Bioinformatics Researcher</option>
+              <option value="Geneticist">Clinical Geneticist</option>
+              <option value="Patient">Patient / Advocate</option>
+            </select>
+          </div>
+
+          <div class="space-y-1">
+            <label for="affiliation" class="block text-xs font-mono font-semibold uppercase tracking-wider text-zinc-400">
+              Affiliation
+            </label>
+            <input 
+              type="text" 
+              name="affiliation" 
+              id="affiliation" 
+              placeholder="e.g. TSCE AI Lab / TMC"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-white transition-all font-mono"
+            >
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+          <div class="space-y-1">
+            <label for="password" class="block text-xs font-mono font-semibold uppercase tracking-wider text-zinc-400">
+              Password *
+            </label>
+            <input 
+              type="password" 
+              name="password" 
+              id="password" 
+              required 
+              placeholder="Min. 8 chars"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-white transition-all font-mono"
+            >
+          </div>
+
+          <div class="space-y-1">
+            <label for="password_confirm" class="block text-xs font-mono font-semibold uppercase tracking-wider text-zinc-400">
+              Confirm Password *
+            </label>
+            <input 
+              type="password" 
+              name="password_confirm" 
+              id="password_confirm" 
+              required 
+              placeholder="Repeat password"
+              class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-white transition-all font-mono"
+            >
+          </div>
+        </div>
+
+        <div class="pt-1">
+          <label class="flex items-start gap-2.5 cursor-pointer">
+            <input type="checkbox" required class="mt-0.5 w-3.5 h-3.5 rounded bg-zinc-900 border-zinc-700 text-white focus:ring-0">
+            <span class="text-[11px] text-zinc-400 leading-tight">
+              I agree to comply with precision oncology data privacy, HIPAA protocols, and institutional research guidelines at Thakur Shyamnarayan College of Engineering, Mumbai.
+            </span>
+          </label>
+        </div>
+
+        <button 
+          type="submit" 
+          class="w-full py-3.5 px-5 rounded-xl font-bold text-xs bg-white text-black hover:bg-zinc-200 shadow-md flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer mt-3"
+        >
+          <i data-lucide="user-plus" class="w-4 h-4"></i>
+          <span>Create Research Account</span>
+        </button>
+
+      </form>
+
+      <div class="mt-5 pt-4 border-t border-zinc-850 text-center">
+        <p class="text-xs text-zinc-400">
+          Already registered?
+          <a href="/login/" class="text-white hover:underline font-semibold ml-1">
+            Sign In to Portal
+          </a>
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- Three.js Live Monochromatic 3D Human Body Anatomy Script -->
+<script>
+  (function initLiveHumanBody() {
+    const canvas = document.getElementById('liveHumanBodyCanvas');
+    if (!canvas || !window.THREE) return;
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: "high-performance" });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.set(0, 0, 15);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+    
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.8);
+    keyLight.position.set(5, 10, 8);
+    scene.add(keyLight);
+
+    const rimLight = new THREE.DirectionalLight(0xa1a1aa, 1.4);
+    rimLight.position.set(-6, -8, -6);
+    scene.add(rimLight);
+
+    const bodyGroup = new THREE.Group();
+
+    const wireMat = new THREE.MeshStandardMaterial({
+      color: 0x71717a,
+      wireframe: true,
+      metalness: 0.9,
+      roughness: 0.2,
+      transparent: true,
+      opacity: 0.35
+    });
+
+    const nodeMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      metalness: 0.9,
+      roughness: 0.1
+    });
+
+    // Body segments
+    const head = new THREE.Mesh(new THREE.SphereGeometry(1.0, 20, 20), wireMat);
+    head.position.set(0, 4.8, 0);
+    bodyGroup.add(head);
+
+    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.45, 0.8, 16), wireMat);
+    neck.position.set(0, 3.8, 0);
+    bodyGroup.add(neck);
+
+    const chest = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.35, 2.8, 20, 10), wireMat);
+    chest.position.set(0, 2.0, 0);
+    bodyGroup.add(chest);
+
+    const pelvis = new THREE.Mesh(new THREE.CylinderGeometry(1.35, 1.5, 2.2, 20, 8), wireMat);
+    pelvis.position.set(0, -0.4, 0);
+    bodyGroup.add(pelvis);
+
+    const armGeom = new THREE.CylinderGeometry(0.28, 0.22, 4.2, 12);
+    const leftArm = new THREE.Mesh(armGeom, wireMat);
+    leftArm.position.set(-2.2, 1.3, 0);
+    leftArm.rotation.z = 0.25;
+    bodyGroup.add(leftArm);
+
+    const rightArm = new THREE.Mesh(armGeom, wireMat);
+    rightArm.position.set(2.2, 1.3, 0);
+    rightArm.rotation.z = -0.25;
+    bodyGroup.add(rightArm);
+
+    const legGeom = new THREE.CylinderGeometry(0.38, 0.28, 5.2, 14);
+    const leftLeg = new THREE.Mesh(legGeom, wireMat);
+    leftLeg.position.set(-0.85, -4.0, 0);
+    bodyGroup.add(leftLeg);
+
+    const rightLeg = new THREE.Mesh(legGeom, wireMat);
+    rightLeg.position.set(0.85, -4.0, 0);
+    bodyGroup.add(rightLeg);
+
+    // Silver Nodes
+    const nodeLocations = [
+      [0.6, 2.4, 0.7],
+      [-0.7, 2.6, 0.3],
+      [0.2, 1.2, 0.3],
+      [-0.5, 0.1, 0.4],
+      [0, 4.8, 0.4]
+    ];
+    for (let pos of nodeLocations) {
+      const node = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 12), nodeMat);
+      node.position.set(pos[0], pos[1], pos[2]);
+      bodyGroup.add(node);
+    }
+
+    scene.add(bodyGroup);
+
+    // Silver Particles
+    const particleGeom = new THREE.BufferGeometry();
+    const particleCount = 80;
+    const positions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount * 3; i += 3) {
+      positions[i] = (Math.random() - 0.5) * 18;
+      positions[i + 1] = (Math.random() - 0.5) * 18;
+      positions[i + 2] = (Math.random() - 0.5) * 18;
+    }
+    particleGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const particles = new THREE.Points(particleGeom, new THREE.PointsMaterial({ color: 0xa1a1aa, size: 0.08, transparent: true, opacity: 0.6 }));
+    scene.add(particles);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      bodyGroup.rotation.y += 0.005;
+      particles.rotation.y -= 0.001;
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    function resize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+  })();
+</script>
+{% endblock %}

@@ -1,0 +1,27 @@
+# ========================================================
+# ONCOGENIX AI - FastAPI AI Inference Microservice
+# ========================================================
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements and install
+COPY ai_service/requirements.txt /app/ai_service/requirements.txt
+RUN pip install --no-cache-dir -r /app/ai_service/requirements.txt
+
+# Copy application source and models
+COPY ai_service/ /app/ai_service/
+COPY data/ /app/data/
+
+ENV PYTHONPATH=/app
+ENV PORT=8001
+
+EXPOSE 8001
+
+CMD ["uvicorn", "ai_service.app.main:app", "--host", "0.0.0.0", "--port", "8001"]

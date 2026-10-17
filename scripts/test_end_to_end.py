@@ -62,6 +62,45 @@ def run_integration_test():
     assert resp_leak_rpt.status_code == 404, "Security Breach on report download!"
     print("✓ Report download isolation verified: Unauthorized user received 404")
 
+    # Test Pure Django Web Frontend Template routes
+    print("\nTesting Pure Django Web Frontend template pages...")
+    resp_landing = client.get("/")
+    assert resp_landing.status_code == 200
+    assert "Thakur Shyamnarayan College of Engineering, Mumbai" in resp_landing.content.decode("utf-8")
+    print("✓ Landing page rendered with institutional college attribution")
+
+    anon_client = Client()
+    resp_login = anon_client.get("/login/")
+    assert resp_login.status_code == 200
+    # Strict requirement: No demo credentials shown in UI
+    assert "demooncologist" not in resp_login.content.decode("utf-8")
+    assert "Quick Demo Fill" not in resp_login.content.decode("utf-8")
+    print("✓ Login page verified: No pre-seeded demo credentials or quick-fill buttons exposed")
+
+    resp_dash = client.get("/dashboard/")
+    assert resp_dash.status_code == 200
+    assert "Precision Oncology Dashboard" in resp_dash.content.decode("utf-8")
+    assert "Holographic Organ Geometry" in resp_dash.content.decode("utf-8")
+    print("✓ Dashboard rendered with 3D Multi-Organ Anatomical Explorer")
+
+    resp_res = client.get(f"/results/{first_id}/")
+    assert resp_res.status_code == 200
+    assert "Anatomical Telemetry" in resp_res.content.decode("utf-8")
+    print("✓ Results page rendered with 3D organ telemetry and CIViC evidence")
+
+    resp_comp = client.get("/comparison/")
+    assert resp_comp.status_code == 200
+    print("✓ Patient comparison page rendered")
+
+    resp_hist = client.get("/history/")
+    assert resp_hist.status_code == 200
+    print("✓ History archive page rendered")
+
+    resp_about = client.get("/about/")
+    assert resp_about.status_code == 200
+    assert "Thakur Shyamnarayan College of Engineering, Mumbai" in resp_about.content.decode("utf-8")
+    print("✓ Methodology & provenance page rendered with academic attribution")
+
     print("\nALL END-TO-END INTEGRATION TESTS PASSED WITH 100% SUCCESS!")
 
 if __name__ == "__main__":

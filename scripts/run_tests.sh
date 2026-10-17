@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 # ========================================================
 # ONCOGENIX AI - Complete Automated Test Suite Runner
+# Pure Django Web Application + FastAPI Microservice
+# Department of Artificial Intelligence & Precision Oncology Research
+# Thakur Shyamnarayan College of Engineering, Mumbai
 # ========================================================
 
 set -e
@@ -15,24 +18,24 @@ else
 fi
 
 echo "=========================================================="
-echo " [1/3] Running AI Inference & Validation Unit Tests..."
+echo " [1/3] Running AI Inference & Variant Validation Tests..."
 echo "=========================================================="
-PYTHONPATH="$PROJECT_ROOT" $PYTHON -m unittest ai_service/tests/test_ai_service.py
+PYTHONPATH="$PROJECT_ROOT" $PYTHON -m unittest discover -s ai_service/tests
 
 echo ""
 echo "=========================================================="
-echo " [2/3] Running Django Backend & Patient Isolation Tests..."
+echo " [2/3] Running Django Frontend & Patient Isolation Tests..."
 echo "=========================================================="
 $PYTHON backend/manage.py test tests
 
 echo ""
 echo "=========================================================="
-echo " [3/3] Running Frontend TypeScript Compilation & Build..."
+echo " [3/3] Running End-to-End System Integration Tests..."
 echo "=========================================================="
-cd "$PROJECT_ROOT/frontend"
-npm run build
+$PYTHON scripts/test_end_to_end.py
 
 echo ""
 echo "=========================================================="
-echo " ALL TESTS PASSED SUCCESSFULLY! (AI, Backend, Frontend)"
+echo " ALL TESTS PASSED WITH 100% SUCCESS!"
+echo " Institution: Thakur Shyamnarayan College of Engineering, Mumbai"
 echo "=========================================================="

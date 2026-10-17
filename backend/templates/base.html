@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}ONCOGENIX AI — Precision Oncology Research Platform{% endblock %}</title>
+  <meta name="description" content="Decode the Mutation. Understand the Cancer. Advance Precision Medicine. AI precision oncology platform developed at Thakur Shyamnarayan College of Engineering, Mumbai.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='48' fill='%23000000' stroke='%23ffffff' stroke-width='4'/><path d='M30 50 Q40 25 50 50 T70 50' stroke='%23ffffff' stroke-width='4' stroke-linecap='round'/><path d='M30 50 Q40 75 50 50 T70 50' stroke='%23a1a1aa' stroke-width='4' stroke-linecap='round'/><circle cx='50' cy='50' r='5' fill='%23ffffff'/></svg>">
+
+  <!-- Typography: Inter & JetBrains Mono (Swiss Minimalist) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN with Black, White & Grey Palette -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            black: '#000000',
+            zinc: {
+              950: '#09090b',
+              900: '#121215',
+              850: '#18181b',
+              800: '#27272a',
+              750: '#323238',
+              700: '#3f3f46',
+              600: '#52525b',
+              500: '#71717a',
+              400: '#a1a1aa',
+              300: '#d4d4d8',
+              200: '#e4e4e7',
+              100: '#f4f4f5',
+              50: '#fafafa'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Three.js & Controls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <!-- Chart.js for Monochromatic Scientific Charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      background-color: #000000;
+      color: #f4f4f5;
+      overflow-x: hidden;
+      letter-spacing: -0.01em;
+    }
+
+    /* Minimalist Swiss Card Borders */
+    .mono-card {
+      background: #09090b;
+      border: 1px solid #27272a;
+      transition: border-color 0.25s ease, transform 0.25s ease;
+    }
+    .mono-card:hover {
+      border-color: #52525b;
+    }
+
+    /* Subtle hairline rules */
+    .border-subtle {
+      border-color: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Custom dark monochrome scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #000000;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #27272a;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #52525b;
+    }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-black text-zinc-100 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-white selection:text-black">
+
+  <!-- Top Institutional Bar (Adobe Minimalist Top Row) -->
+  <div class="border-b border-subtle bg-black text-zinc-400 py-1.5 px-4 text-center">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono">
+      <div class="flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+        <span class="text-white font-medium">Thakur Shyamnarayan College of Engineering, Mumbai</span>
+        <span class="text-zinc-600 hidden sm:inline">/</span>
+        <span class="hidden sm:inline">AI Precision Oncology Research</span>
+      </div>
+      <div class="flex items-center gap-3 text-zinc-500 text-[10px]">
+        <span>TCGA PanCancer Atlas</span>
+        <span>•</span>
+        <span>CIViC & ClinVar</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation Bar (Clean Adobe-Style White-on-Black Header) -->
+  <header class="sticky top-0 z-50 bg-black/90 backdrop-blur-md border-b border-subtle">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo (Adobe-Inspired Minimal Badge) -->
+      <a href="/" class="flex items-center gap-2.5 group">
+        <div class="w-8 h-8 rounded-lg bg-white text-black font-black flex items-center justify-center text-xs tracking-tighter">
+          OGX
+        </div>
+        <div class="flex items-baseline gap-1.5">
+          <span class="font-extrabold text-base tracking-tight text-white">ONCOGENIX</span>
+          <span class="text-[10px] font-mono px-1 py-0.2 rounded bg-zinc-800 text-zinc-300">AI</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Links (Clean Swiss Typography) -->
+      <nav class="hidden md:flex items-center gap-1 text-xs font-medium text-zinc-300">
+        <a href="/dashboard/" class="px-3 py-1.5 rounded-lg hover:text-white hover:bg-zinc-900 transition-colors {% if request.path == '/dashboard/' %}text-white bg-zinc-900{% endif %}">
+          Dashboard
+        </a>
+        <a href="/analysis/" class="px-3 py-1.5 rounded-lg hover:text-white hover:bg-zinc-900 transition-colors {% if request.path == '/analysis/' %}text-white bg-zinc-900{% endif %}">
+          DNA Analysis
+        </a>
+        <a href="/comparison/" class="px-3 py-1.5 rounded-lg hover:text-white hover:bg-zinc-900 transition-colors {% if request.path == '/comparison/' %}text-white bg-zinc-900{% endif %}">
+          Patient Comparator
+        </a>
+        <a href="/history/" class="px-3 py-1.5 rounded-lg hover:text-white hover:bg-zinc-900 transition-colors {% if request.path == '/history/' %}text-white bg-zinc-900{% endif %}">
+          Archive
+        </a>
+        <a href="/about/" class="px-3 py-1.5 rounded-lg hover:text-white hover:bg-zinc-900 transition-colors {% if request.path == '/about/' %}text-white bg-zinc-900{% endif %}">
+          Methodology
+        </a>
+      </nav>
+
+      <!-- Auth & Actions (Clean Minimalist White Pill) -->
+      <div class="flex items-center gap-3">
+        {% if user.is_authenticated %}
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-zinc-400 font-mono hidden sm:inline">{{ user.username }}</span>
+            <a href="/logout/" class="p-1.5 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors" title="Sign Out">
+              <i data-lucide="log-out" class="w-4 h-4"></i>
+            </a>
+          </div>
+        {% else %}
+          <div class="flex items-center gap-2">
+            <a href="/login/" class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-zinc-300 hover:text-white transition-colors">
+              Sign In
+            </a>
+            <a href="/register/" class="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-white text-black hover:bg-zinc-200 transition-colors">
+              Register
+            </a>
+          </div>
+        {% endif %}
+
+        <!-- Mobile Menu Toggle -->
+        <button id="mobileMenuBtn" class="md:hidden p-1.5 rounded-lg text-zinc-400 hover:text-white">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Drawer -->
+    <div id="mobileMenu" class="hidden md:hidden border-b border-subtle bg-black px-4 pt-2 pb-4 space-y-1.5">
+      <a href="/dashboard/" class="block px-3 py-1.5 rounded-lg text-zinc-300 hover:bg-zinc-900 text-xs">Dashboard</a>
+      <a href="/analysis/" class="block px-3 py-1.5 rounded-lg text-zinc-300 hover:bg-zinc-900 text-xs">DNA Analysis</a>
+      <a href="/comparison/" class="block px-3 py-1.5 rounded-lg text-zinc-300 hover:bg-zinc-900 text-xs">Patient Comparator</a>
+      <a href="/history/" class="block px-3 py-1.5 rounded-lg text-zinc-300 hover:bg-zinc-900 text-xs">Archive</a>
+      <a href="/about/" class="block px-3 py-1.5 rounded-lg text-zinc-300 hover:bg-zinc-900 text-xs">Methodology</a>
+      {% if not user.is_authenticated %}
+        <div class="grid grid-cols-2 gap-2 pt-2 border-t border-subtle">
+          <a href="/login/" class="text-center py-1.5 rounded-lg border border-zinc-800 text-xs text-zinc-300">Sign In</a>
+          <a href="/register/" class="text-center py-1.5 rounded-lg bg-white text-black font-semibold text-xs">Register</a>
+        </div>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- Main Content Stage -->
+  <main class="flex-grow">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Minimalist Swiss Footer -->
+  <footer class="border-t border-subtle bg-black text-zinc-400 text-xs relative z-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <div class="w-5 h-5 rounded bg-white text-black font-black text-[9px] flex items-center justify-center">OGX</div>
+            <span class="font-bold text-white tracking-wider">ONCOGENIX AI</span>
+          </div>
+          <p class="text-[11px] text-zinc-500">
+            “Decode the Mutation. Understand the Cancer. Advance Precision Medicine.”
+          </p>
+          <div class="text-[11px] text-zinc-400 font-mono">
+            Thakur Shyamnarayan College of Engineering, Mumbai
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-6 text-xs text-zinc-400 font-mono">
+          <a href="/dashboard/" class="hover:text-white transition-colors">Dashboard</a>
+          <a href="/analysis/" class="hover:text-white transition-colors">DNA Analysis</a>
+          <a href="/comparison/" class="hover:text-white transition-colors">Comparator</a>
+          <a href="/history/" class="hover:text-white transition-colors">Archive</a>
+          <a href="/about/" class="hover:text-white transition-colors">Methodology</a>
+        </div>
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-subtle flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-zinc-500 font-mono">
+        <p>© 2026 ONCOGENIX AI. Developed at Thakur Shyamnarayan College of Engineering, Mumbai.</p>
+        <p>Investigational decision-support tool. Not a clinical diagnosis.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+    const btn = document.getElementById('mobileMenuBtn');
+    const menu = document.getElementById('mobileMenu');
+    if (btn && menu) {
+      btn.addEventListener('click', () => {
+        menu.classList.toggle('hidden');
+      });
+    }
+  </script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

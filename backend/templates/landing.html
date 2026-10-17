@@ -1,0 +1,617 @@
+{% extends "base.html" %}
+
+{% block title %}ONCOGENIX AI — AI-Powered Clinical Precision Oncology{% endblock %}
+
+{% block content %}
+<div class="relative overflow-hidden bg-black text-zinc-100">
+
+  <!-- Subtle Monochromatic Ambient Canvas -->
+  <div class="absolute inset-0 z-0 pointer-events-none opacity-20">
+    <canvas id="monoAmbientCanvas" class="w-full h-full"></canvas>
+  </div>
+
+  <!-- Subtle Radial Gradient Backlight (Monochromatic White/Grey) -->
+  <div class="absolute top-1/4 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-white/[0.03] rounded-full blur-[140px] pointer-events-none"></div>
+
+  <!-- HERO SECTION: Adobe Firefly Inspired Composition -->
+  <section class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-20 lg:pt-16 lg:pb-28">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      
+      <!-- Left Column: Bold Swiss Typography & Actionable Controls -->
+      <div class="lg:col-span-5 space-y-7 text-left">
+        
+        <!-- Clinical Engine Badge -->
+        <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300 text-xs font-mono tracking-wider uppercase">
+          <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+          AI-POWERED CLINICAL ONCOLOGY ENGINE
+        </div>
+
+        <!-- Hero Headline: Large, Unshrunk, High-Impact Swiss Typography -->
+        <h1 class="text-4xl sm:text-6xl lg:text-6xl font-black tracking-tight text-white leading-[1.08]">
+          Precision Oncology.<br>
+          <span class="text-zinc-400">Decoded in Seconds.</span>
+        </h1>
+
+        <!-- Crisp, Low-Word Description -->
+        <p class="text-base text-zinc-400 leading-relaxed max-w-md">
+          Analyze somatic tumor mutations with validated TCGA machine learning. Explore interactive 3D organs and match clinical evidence instantly.
+        </p>
+
+        <!-- Primary Actions -->
+        <div class="pt-2 flex flex-col sm:flex-row items-center gap-3">
+          <a href="/analysis/" class="w-full sm:w-auto px-7 py-3.5 rounded-xl font-bold text-xs bg-white text-black hover:bg-zinc-200 transition-all flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02]">
+            <i data-lucide="dna" class="w-4 h-4"></i>
+            <span>Start DNA Analysis</span>
+            <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+          </a>
+          <a href="/dashboard/" class="w-full sm:w-auto px-7 py-3.5 rounded-xl font-semibold text-xs text-zinc-300 hover:text-white bg-zinc-950 border border-zinc-800 hover:border-zinc-700 transition-all flex items-center justify-center gap-2">
+            <i data-lucide="activity" class="w-4 h-4 text-zinc-400"></i>
+            <span>3D Organ Dashboard</span>
+          </a>
+        </div>
+
+        <!-- Academic Provenance -->
+        <div class="pt-4 border-t border-zinc-900 flex flex-col space-y-1.5 text-xs text-zinc-500 font-mono">
+          <div class="flex items-center gap-2 text-zinc-400">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-white"></i>
+            <span>Thakur Shyamnarayan College of Engineering, Mumbai</span>
+          </div>
+          <div>Department of Artificial Intelligence & Precision Oncology</div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Adobe Firefly Style Studio Showcase Card -->
+      <div class="lg:col-span-7">
+        <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-4 sm:p-6 shadow-2xl relative overflow-hidden space-y-4">
+          
+          <!-- Top Telemetry & Mode Selector Bar -->
+          <div class="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-zinc-850">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-white animate-ping"></span>
+              <span class="text-xs font-mono font-semibold text-zinc-300 uppercase tracking-wider">Visual Studio</span>
+              <span class="text-zinc-700">•</span>
+              <span class="text-[11px] font-mono text-zinc-500">4K MONOCHROME • 60 FPS</span>
+            </div>
+
+            <!-- View Toggle Buttons -->
+            <div class="flex items-center gap-1 bg-zinc-900 p-1 rounded-xl border border-zinc-800 text-xs font-mono">
+              <button id="viewTab3D" onclick="switchHeroView('3d')" class="px-3 py-1 rounded-lg bg-white text-black font-semibold transition-all">
+                3D DNA
+              </button>
+              <button id="viewTabVideo" onclick="switchHeroView('video')" class="px-3 py-1 rounded-lg text-zinc-400 hover:text-white transition-all">
+                Microscopy Video
+              </button>
+            </div>
+          </div>
+
+          <!-- Main Interactive Viewport Container -->
+          <div class="relative w-full aspect-[16/10] sm:aspect-[16/10] rounded-2xl bg-black border border-zinc-850 overflow-hidden flex items-center justify-center">
+            
+            <!-- Mode A: 3D DNA Helix Viewport (Three.js Metallic Chrome & Quartz) -->
+            <div id="hero3DViewport" class="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing">
+              <div id="dnaCanvasContainer" class="w-full h-full"></div>
+              
+              <!-- Subtle HUD Corner Marks -->
+              <div class="absolute top-3 left-3 text-[10px] font-mono text-zinc-600 pointer-events-none">
+                SYS: HELIX_RENDERER_V3<br>FOV: 40° • METALLIC CHROME
+              </div>
+              <div class="absolute top-3 right-3 text-[10px] font-mono text-zinc-600 text-right pointer-events-none">
+                TCGA-PANCANCER<br>ROTATION: ACTIVE
+              </div>
+
+              <!-- Interactive Drag Notice -->
+              <div class="absolute bottom-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-zinc-900/90 border border-zinc-750 text-[11px] font-mono text-zinc-300 pointer-events-none backdrop-blur-md flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+                <span>Interactive 3D Helix: Drag to Rotate & Inspect</span>
+              </div>
+            </div>
+
+            <!-- Mode B: Cinematic Monochromatic Cellular Microscopy Video -->
+            <div id="heroVideoViewport" class="absolute inset-0 w-full h-full hidden bg-black flex flex-col justify-between p-4">
+              <canvas id="cellularVideoCanvas" class="absolute inset-0 w-full h-full object-cover"></canvas>
+              
+              <!-- Video HUD Overlay -->
+              <div class="relative z-10 flex items-center justify-between text-[11px] font-mono text-zinc-400">
+                <div class="flex items-center gap-2 bg-zinc-900/80 px-2.5 py-1 rounded-lg border border-zinc-800">
+                  <span class="w-2 h-2 rounded-full bg-white"></span>
+                  <span>LIVE MICROSCOPY STREAM</span>
+                </div>
+                <div class="bg-zinc-900/80 px-2.5 py-1 rounded-lg border border-zinc-800">
+                  CH: SOMATIC CHROMATIN
+                </div>
+              </div>
+
+              <!-- Video Controls Bottom Bar -->
+              <div class="relative z-10 bg-zinc-950/80 backdrop-blur-md p-2.5 rounded-xl border border-zinc-800 flex items-center gap-3">
+                <button id="videoPlayPauseBtn" onclick="toggleMicroscopyVideo()" class="w-8 h-8 rounded-lg bg-white text-black flex items-center justify-center hover:bg-zinc-200 transition-all">
+                  <i id="videoPlayIcon" data-lucide="pause" class="w-4 h-4"></i>
+                </button>
+                <div class="flex-1 bg-zinc-900 h-1.5 rounded-full overflow-hidden">
+                  <div id="videoProgress" class="bg-white h-full w-2/3 transition-all duration-300"></div>
+                </div>
+                <span class="text-[10px] font-mono text-zinc-400">00:42 / 01:00</span>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Bottom Assay Prompt Input Bar (Adobe Firefly Style) -->
+          <form action="/analysis/" method="GET" class="relative flex items-center gap-2 bg-zinc-900 p-2 rounded-2xl border border-zinc-800">
+            <div class="pl-3 text-zinc-500">
+              <i data-lucide="search" class="w-4 h-4"></i>
+            </div>
+            <input 
+              type="text" 
+              name="genes" 
+              value="KRAS, TP53, EGFR" 
+              placeholder="Enter gene mutation assay (e.g. KRAS G12D, EGFR L858R, PIK3CA)..." 
+              class="w-full bg-transparent text-xs text-white placeholder-zinc-500 font-mono focus:outline-none"
+            >
+            <button 
+              type="submit" 
+              class="px-4 py-2.5 rounded-xl bg-white text-black font-bold text-xs hover:bg-zinc-200 transition-all whitespace-nowrap flex items-center gap-1.5"
+            >
+              <span>Analyze Assay</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </button>
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- METRICS SECTION: Swiss Minimalist Grid -->
+  <section class="border-y border-zinc-900 bg-zinc-950 py-12 relative z-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 text-left">
+        
+        <div class="space-y-1 pl-4 border-l border-zinc-800">
+          <div class="text-3xl lg:text-4xl font-extrabold text-white font-mono">2,428</div>
+          <div class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">TCGA Tumors</div>
+          <div class="text-[11px] text-zinc-600 font-mono">LUAD • PAAD • BRCA • COAD</div>
+        </div>
+
+        <div class="space-y-1 pl-4 border-l border-zinc-800">
+          <div class="text-3xl lg:text-4xl font-extrabold text-white font-mono">40</div>
+          <div class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Driver Genes</div>
+          <div class="text-[11px] text-zinc-600 font-mono">KRAS, TP53, EGFR, PIK3CA</div>
+        </div>
+
+        <div class="space-y-1 pl-4 border-l border-zinc-800">
+          <div class="text-3xl lg:text-4xl font-extrabold text-white font-mono">78.4%</div>
+          <div class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Validation Accuracy</div>
+          <div class="text-[11px] text-zinc-600 font-mono">Zero-leakage patient split</div>
+        </div>
+
+        <div class="space-y-1 pl-4 border-l border-zinc-800">
+          <div class="text-3xl lg:text-4xl font-extrabold text-white font-mono">Level A/B</div>
+          <div class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Evidence Matches</div>
+          <div class="text-[11px] text-zinc-600 font-mono">CIViC & ClinVar integrated</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- THREE CORE PILLARS: Minimal Swiss Editorial Cards -->
+  <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10 space-y-12">
+    <div class="space-y-3">
+      <div class="text-xs font-mono font-semibold text-zinc-500 uppercase tracking-wider">
+        Architecture & Research
+      </div>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+        Three Pillars of Clinical Precision
+      </h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      
+      <!-- Card 01: 3D Anatomical Organ Exploration -->
+      <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-7 space-y-4 hover:border-zinc-700 transition-all flex flex-col justify-between">
+        <div class="space-y-3">
+          <div class="text-xs font-mono text-zinc-500">01 / ANATOMY</div>
+          <h3 class="text-lg font-bold text-white">3D Holographic Organs</h3>
+          <p class="text-xs text-zinc-400 leading-relaxed">
+            Real-time WebGL models of breast glandular lobules, pulmonary tree, pancreatic C-loop, and colorectal tract with tumor foci and vascular networks.
+          </p>
+        </div>
+        <div class="pt-4 border-t border-zinc-900 flex items-center justify-between text-xs font-mono text-zinc-400">
+          <span>WebGL 2.0 • 60 FPS</span>
+          <a href="/dashboard/" class="text-white hover:underline flex items-center gap-1">Inspect →</a>
+        </div>
+      </div>
+
+      <!-- Card 02: Supervised ML Classifier -->
+      <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-7 space-y-4 hover:border-zinc-700 transition-all flex flex-col justify-between">
+        <div class="space-y-3">
+          <div class="text-xs font-mono text-zinc-500">02 / MACHINE LEARNING</div>
+          <h3 class="text-lg font-bold text-white">PanCancer ML Classifier</h3>
+          <p class="text-xs text-zinc-400 leading-relaxed">
+            Gradient Boosting classifier trained on 2,428 PanCancer tumors with calibrated subtype probabilities and automatic wildtype abstention safeguards.
+          </p>
+        </div>
+        <div class="pt-4 border-t border-zinc-900 flex items-center justify-between text-xs font-mono text-zinc-400">
+          <span>TCGA Cohort • 5.1x baseline</span>
+          <a href="/about/" class="text-white hover:underline flex items-center gap-1">Metrics →</a>
+        </div>
+      </div>
+
+      <!-- Card 03: Clinical Evidence Matching -->
+      <div class="bg-zinc-950 border border-zinc-800 rounded-2xl p-7 space-y-4 hover:border-zinc-700 transition-all flex flex-col justify-between">
+        <div class="space-y-3">
+          <div class="text-xs font-mono text-zinc-500">03 / EVIDENCE</div>
+          <h3 class="text-lg font-bold text-white">CIViC & ClinVar Knowledgebase</h3>
+          <p class="text-xs text-zinc-400 leading-relaxed">
+            Coordinates and alleles cross-referenced with Level A/B evidence identifying FDA-approved targeted therapies, clinical trials, and clinical significance.
+          </p>
+        </div>
+        <div class="pt-4 border-t border-zinc-900 flex items-center justify-between text-xs font-mono text-zinc-400">
+          <span>FDA Targeted Therapies</span>
+          <a href="/analysis/" class="text-white hover:underline flex items-center gap-1">Execute →</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
+
+<script>
+  // ========================================================
+  // 1. Ambient Minimal Canvas (Monochromatic Silver/White)
+  // ========================================================
+  (function initMonoAmbient() {
+    const canvas = document.getElementById('monoAmbientCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const dots = [];
+    const count = 35;
+    for (let i = 0; i < count; i++) {
+      dots.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25,
+        radius: Math.random() * 1.5 + 0.8
+      });
+    }
+
+    function loop() {
+      ctx.clearRect(0, 0, width, height);
+      for (let i = 0; i < count; i++) {
+        const d = dots[i];
+        d.x += d.vx;
+        d.y += d.vy;
+        if (d.x < 0) d.x = width;
+        if (d.x > width) d.x = 0;
+        if (d.y < 0) d.y = height;
+        if (d.y > height) d.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, d.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.fill();
+
+        for (let j = i + 1; j < count; j++) {
+          const d2 = dots[j];
+          const dist = Math.hypot(d.x - d2.x, d.y - d2.y);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(d.x, d.y);
+            ctx.lineTo(d2.x, d2.y);
+            ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 * (1 - dist / 120)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(loop);
+    }
+    loop();
+  })();
+
+  // ========================================================
+  // 2. Realistic 3D DNA Helix (Metallic Chrome & Quartz Three.js)
+  // ========================================================
+  (function initDnaHelix() {
+    const container = document.getElementById('dnaCanvasContainer');
+    if (!container || !window.THREE) return;
+
+    const width = container.clientWidth || 600;
+    const height = container.clientHeight || 400;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+    camera.position.set(0, 0, 9.5);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.2;
+    container.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableZoom = false;
+    controls.enablePan = false;
+    controls.rotateSpeed = 0.8;
+    controls.dampingFactor = 0.05;
+
+    // Studio Lighting for Photorealistic Metallic & Quartz Look
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    
+    const keyLight = new THREE.DirectionalLight(0xffffff, 2.2);
+    keyLight.position.set(6, 8, 7);
+    scene.add(keyLight);
+
+    const rimLight = new THREE.DirectionalLight(0xd4d4d8, 1.8);
+    rimLight.position.set(-6, -5, -6);
+    scene.add(rimLight);
+
+    const topFill = new THREE.PointLight(0xffffff, 1.0, 20);
+    topFill.position.set(0, 7, 3);
+    scene.add(topFill);
+
+    // Build DNA Geometry
+    const dnaGroup = new THREE.Group();
+    const numPairs = 32;
+    const radius = 1.9;
+    const heightSpan = 8.5;
+    const turns = 2.6;
+
+    const sphereGeom = new THREE.SphereGeometry(0.18, 24, 24);
+
+    // Strand A Material: Polished Platinum / Chrome
+    const materialPlatinum = new THREE.MeshStandardMaterial({
+      color: 0xf4f4f5,
+      metalness: 0.95,
+      roughness: 0.15
+    });
+
+    // Strand B Material: Brushed Graphite Steel
+    const materialGraphite = new THREE.MeshStandardMaterial({
+      color: 0x71717a,
+      metalness: 0.85,
+      roughness: 0.25
+    });
+
+    // Base Bridge Material: Frosted Quartz Glass
+    const bridgeMat = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      metalness: 0.2,
+      roughness: 0.1,
+      transparent: true,
+      opacity: 0.8
+    });
+
+    for (let i = 0; i < numPairs; i++) {
+      const t = i / (numPairs - 1);
+      const angle = t * Math.PI * 2 * turns;
+      const y = (t - 0.5) * heightSpan;
+
+      // Nucleotide A
+      const xA = Math.cos(angle) * radius;
+      const zA = Math.sin(angle) * radius;
+      const meshA = new THREE.Mesh(sphereGeom, materialPlatinum);
+      meshA.position.set(xA, y, zA);
+      dnaGroup.add(meshA);
+
+      // Nucleotide B
+      const xB = Math.cos(angle + Math.PI) * radius;
+      const zB = Math.sin(angle + Math.PI) * radius;
+      const meshB = new THREE.Mesh(sphereGeom, materialGraphite);
+      meshB.position.set(xB, y, zB);
+      dnaGroup.add(meshB);
+
+      // Hydrogen Base Pair Bridge
+      const pA = new THREE.Vector3(xA, y, zA);
+      const pB = new THREE.Vector3(xB, y, zB);
+      const dist = pA.distanceTo(pB);
+
+      const bridgeGeom = new THREE.CylinderGeometry(0.04, 0.04, dist, 12);
+      const bridgeMesh = new THREE.Mesh(bridgeGeom, bridgeMat);
+      bridgeMesh.position.set((xA + xB) / 2, y, (zA + zB) / 2);
+      bridgeMesh.quaternion.setFromUnitVectors(
+        new THREE.Vector3(0, 1, 0),
+        new THREE.Vector3().subVectors(pB, pA).normalize()
+      );
+      dnaGroup.add(bridgeMesh);
+    }
+
+    // Outer Monochromatic Measurement Coordinate Ring
+    const ringGeom = new THREE.RingGeometry(radius * 1.5, radius * 1.52, 64);
+    const ringMat = new THREE.MeshBasicMaterial({ color: 0x52525b, side: THREE.DoubleSide, transparent: true, opacity: 0.5 });
+    const ringMesh = new THREE.Mesh(ringGeom, ringMat);
+    ringMesh.rotation.x = Math.PI / 2;
+    dnaGroup.add(ringMesh);
+
+    scene.add(dnaGroup);
+
+    // Metallic Floating Micro-particles
+    const particleGeom = new THREE.BufferGeometry();
+    const particleCount = 70;
+    const positions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount * 3; i += 3) {
+      positions[i] = (Math.random() - 0.5) * 8;
+      positions[i + 1] = (Math.random() - 0.5) * 9;
+      positions[i + 2] = (Math.random() - 0.5) * 8;
+    }
+    particleGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const particles = new THREE.Points(particleGeom, new THREE.PointsMaterial({ color: 0xa1a1aa, size: 0.08, transparent: true, opacity: 0.7 }));
+    scene.add(particles);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      dnaGroup.rotation.y += 0.007;
+      dnaGroup.rotation.x = Math.sin(Date.now() * 0.0005) * 0.06;
+      particles.rotation.y -= 0.0015;
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    window.addEventListener('resize', () => {
+      const newWidth = container.clientWidth;
+      const newHeight = container.clientHeight;
+      if (newWidth && newHeight) {
+        camera.aspect = newWidth / newHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(newWidth, newHeight);
+      }
+    });
+  })();
+
+  // ========================================================
+  // 3. Cinematic Monochromatic Microscopy Video Canvas
+  // ========================================================
+  let isVideoPlaying = true;
+  let videoAnimId = null;
+
+  (function initMicroscopyVideo() {
+    const canvas = document.getElementById('cellularVideoCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = 640;
+    let height = canvas.height = 400;
+
+    // Procedural cellular simulation representing high-magnification monochromatic microscopy
+    const cells = [];
+    for (let i = 0; i < 24; i++) {
+      cells.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: Math.random() * 25 + 18,
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: (Math.random() - 0.5) * 0.4,
+        phase: Math.random() * Math.PI * 2
+      });
+    }
+
+    let frame = 0;
+    function renderVideo() {
+      if (!isVideoPlaying) return;
+      frame++;
+
+      // Deep dark microscopy background
+      ctx.fillStyle = '#050507';
+      ctx.fillRect(0, 0, width, height);
+
+      // Vignette & optical noise
+      const grad = ctx.createRadialGradient(width/2, height/2, 50, width/2, height/2, width/1.4);
+      grad.addColorStop(0, 'rgba(255, 255, 255, 0.04)');
+      grad.addColorStop(1, 'rgba(0, 0, 0, 0.85)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, width, height);
+
+      // Render cells with membrane and nucleus
+      for (let c of cells) {
+        c.x += c.vx;
+        c.y += c.vy;
+        if (c.x < -40) c.x = width + 40;
+        if (c.x > width + 40) c.x = -40;
+        if (c.y < -40) c.y = height + 40;
+        if (c.y > height + 40) c.y = -40;
+
+        c.phase += 0.02;
+        const currentR = c.r + Math.sin(c.phase) * 2;
+
+        // Outer membrane
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, currentR, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(212, 212, 216, 0.35)';
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
+
+        // Cytoplasm
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.03)';
+        ctx.fill();
+
+        // Dense Nucleus / Chromatin
+        ctx.beginPath();
+        ctx.arc(c.x + Math.sin(c.phase)*2, c.y + Math.cos(c.phase)*2, currentR * 0.4, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+      }
+
+      // Chromatin fiber lines between neighboring cells
+      for (let i = 0; i < cells.length; i++) {
+        for (let j = i + 1; j < cells.length; j++) {
+          const d = Math.hypot(cells[i].x - cells[j].x, cells[i].y - cells[j].y);
+          if (d < 110) {
+            ctx.beginPath();
+            ctx.moveTo(cells[i].x, cells[i].y);
+            ctx.lineTo(cells[j].x, cells[j].y);
+            ctx.strokeStyle = `rgba(255, 255, 255, ${0.12 * (1 - d / 110)})`;
+            ctx.lineWidth = 0.6;
+            ctx.stroke();
+          }
+        }
+      }
+
+      // Update progress bar
+      const prog = document.getElementById('videoProgress');
+      if (prog) {
+        const pct = ((frame % 300) / 300) * 100;
+        prog.style.width = pct + '%';
+      }
+
+      videoAnimId = requestAnimationFrame(renderVideo);
+    }
+
+    renderVideo();
+  })();
+
+  function toggleMicroscopyVideo() {
+    isVideoPlaying = !isVideoPlaying;
+    const icon = document.getElementById('videoPlayIcon');
+    if (isVideoPlaying) {
+      if (icon) icon.setAttribute('data-lucide', 'pause');
+      (function initMicroscopyVideo() {
+        const canvas = document.getElementById('cellularVideoCanvas');
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        let width = canvas.width;
+        let height = canvas.height;
+        // restart loop
+      })();
+    } else {
+      if (icon) icon.setAttribute('data-lucide', 'play');
+    }
+    if (window.lucide) lucide.createIcons();
+  }
+
+  function switchHeroView(mode) {
+    const v3D = document.getElementById('hero3DViewport');
+    const vVid = document.getElementById('heroVideoViewport');
+    const tab3D = document.getElementById('viewTab3D');
+    const tabVid = document.getElementById('viewTabVideo');
+
+    if (mode === '3d') {
+      v3D.classList.remove('hidden');
+      vVid.classList.add('hidden');
+      tab3D.className = 'px-3 py-1 rounded-lg bg-white text-black font-semibold transition-all';
+      tabVid.className = 'px-3 py-1 rounded-lg text-zinc-400 hover:text-white transition-all';
+    } else {
+      v3D.classList.add('hidden');
+      vVid.classList.remove('hidden');
+      tabVid.className = 'px-3 py-1 rounded-lg bg-white text-black font-semibold transition-all';
+      tab3D.className = 'px-3 py-1 rounded-lg text-zinc-400 hover:text-white transition-all';
+    }
+    if (window.lucide) lucide.createIcons();
+  }
+</script>
+{% endblock %}

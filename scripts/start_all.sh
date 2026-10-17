@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # ========================================================
-# ONCOGENIX AI - Unified Local Development Startup Script
-# Starts FastAPI (8001), Django (8000), and React Vite (5173)
+# ONCOGENIX AI - Unified Startup Script
+# Pure Django Web Application (8000) & FastAPI AI Inference (8001)
+# Developed at Thakur Shyamnarayan College of Engineering, Mumbai
 # ========================================================
 
 set -e
@@ -11,6 +12,8 @@ cd "$PROJECT_ROOT"
 
 echo "=========================================================="
 echo " Starting ONCOGENIX AI Precision Oncology Ecosystem"
+echo " Department of Artificial Intelligence & Precision Oncology Research"
+echo " Thakur Shyamnarayan College of Engineering, Mumbai"
 echo "=========================================================="
 
 # Activate virtual environment
@@ -22,12 +25,12 @@ else
     UVICORN="uvicorn"
 fi
 
-# Ensure migrations and seeds
-echo "[1/4] Applying database migrations and seeding demo accounts..."
+# 1. Ensure migrations and seeds
+echo "[1/3] Applying database migrations and initializing clinical accounts..."
 $PYTHON backend/manage.py migrate --noinput
 $PYTHON scripts/seed_demo_data.py
 
-# Function to kill all children on exit
+# Function to kill all background services on exit
 cleanup() {
     echo ""
     echo "Terminating ONCOGENIX AI background services..."
@@ -37,32 +40,25 @@ cleanup() {
 }
 trap cleanup SIGINT SIGTERM EXIT
 
-# 1. Start FastAPI AI Inference Service
-echo "[2/4] Starting FastAPI AI Inference Service on http://127.0.0.1:8001 ..."
+# 2. Start FastAPI AI Inference Microservice
+echo "[2/3] Starting FastAPI AI Inference Microservice on http://127.0.0.1:8001 ..."
 PYTHONPATH="$PROJECT_ROOT" $UVICORN ai_service.app.main:app --host 127.0.0.1 --port 8001 &
 FASTAPI_PID=$!
 
 # Wait briefly for FastAPI to initialize
 sleep 2
 
-# 2. Start Django Backend Service
-echo "[3/4] Starting Django Application Backend on http://127.0.0.1:8000 ..."
+# 3. Start Django Web Application Server
+echo "[3/3] Starting Unified Pure Django Web Application on http://127.0.0.1:8000 ..."
 $PYTHON backend/manage.py runserver 127.0.0.1:8000 &
 DJANGO_PID=$!
 
-# 3. Start Vite React Frontend
-echo "[4/4] Starting Vite React Frontend on http://127.0.0.1:5173 ..."
-cd "$PROJECT_ROOT/frontend"
-npm run dev &
-FRONTEND_PID=$!
-
 echo ""
 echo "=========================================================="
-echo " ONCOGENIX AI Services are LIVE:"
-echo "   - React Frontend:   http://localhost:5173"
-echo "   - Django Backend:   http://127.0.0.1:8000"
-echo "   - FastAPI Engine:   http://127.0.0.1:8001/docs"
-echo "   - Demo Clinician:   demooncologist / Password123!"
+echo " ONCOGENIX AI Precision Oncology Services are LIVE:"
+echo "   - Web Application:  http://127.0.0.1:8000"
+echo "   - AI API Service:   http://127.0.0.1:8001/docs"
+echo "   - Institution:      Thakur Shyamnarayan College of Engineering, Mumbai"
 echo "=========================================================="
 echo "Press Ctrl+C to stop all services."
 

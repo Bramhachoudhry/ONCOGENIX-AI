@@ -80,6 +80,7 @@ def generate_patient_pdf_report(analysis_data: Dict[str, Any]) -> bytes:
     # Header banner
     story.append(Paragraph("ONCOGENIX AI", title_style))
     story.append(Paragraph("Precision Oncology AI Platform — Genomic Profiling & Clinical Evidence Report", subtitle_style))
+    story.append(Paragraph("Department of Artificial Intelligence & Precision Oncology Research, Thakur Shyamnarayan College of Engineering, Mumbai", disclaimer_style))
     story.append(Spacer(1, 8))
     story.append(HRFlowable(width="100%", thickness=1.5, color=colors.HexColor("#0284c7"), spaceAfter=12))
 

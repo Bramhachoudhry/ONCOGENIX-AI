@@ -51,3 +51,42 @@ class Analysis(models.Model):
 
     def __str__(self):
         return f"Analysis {self.id} - {self.sample_id} ({self.status})"
+
+    @property
+    def predicted_cancer_type(self):
+        pred = self.cancer_prediction or {}
+        return pred.get("predicted_cancer_type") or pred.get("predicted_cancer_code") or "UNCLASSIFIED"
+
+    @property
+    def predicted_cancer_name(self):
+        pred = self.cancer_prediction or {}
+        return pred.get("predicted_cancer_name") or "Unclassified Somatic Profile"
+
+    @property
+    def confidence_score(self):
+        score = (self.cancer_prediction or {}).get("confidence_score", 0.0)
+        try:
+            val = float(score)
+            if 0.0 < val <= 1.0:
+                return val * 100.0
+            return val
+        except (ValueError, TypeError):
+            return 0.0
+
+    @property
+    def patient_summary(self):
+        return (self.cancer_prediction or {}).get("patient_summary", "")
+
+    @property
+    def probabilities_json(self):
+        import json
+        probs = (self.cancer_prediction or {}).get("probabilities", {})
+        return json.dumps(probs)
+
+    @property
+    def observed_mutations(self):
+        return self.observed_variants or []
+
+    @property
+    def matched_evidence(self):
+        return self.evidence_matches or []

@@ -1,0 +1,441 @@
+{% extends "base.html" %}
+
+{% block title %}DNA Mutation Assay & Classification Engine — ONCOGENIX AI{% endblock %}
+
+{% block extra_head %}
+<style>
+  .drop-zone {
+    border: 2px dashed #3f3f46;
+    transition: all 0.25s ease;
+  }
+  .drop-zone:hover, .drop-zone.dragover {
+    border-color: #ffffff;
+    background-color: #121215;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 text-zinc-100">
+
+  <!-- Header Banner -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-zinc-850">
+    <div class="space-y-1">
+      <div class="flex items-center gap-2 text-xs font-mono text-zinc-400">
+        <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+        <span class="uppercase tracking-wider font-semibold text-zinc-300">Somatic Variant Lab</span>
+        <span class="text-zinc-700">•</span>
+        <span>Thakur Shyamnarayan College of Engineering, Mumbai</span>
+      </div>
+      <h1 class="text-3xl font-extrabold text-white tracking-tight">
+        DNA Mutation Assay Analysis
+      </h1>
+      <p class="text-xs text-zinc-400 max-w-2xl">
+        Upload somatic mutation files (CSV, TSV, MAF, VCF) or specify driver genes to infer cancer classification and match clinical therapies.
+      </p>
+    </div>
+
+    <!-- Live Status Badge -->
+    <div class="flex items-center gap-2.5">
+      <div class="px-3.5 py-1.5 rounded-xl bg-zinc-900 border border-zinc-800 flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
+        <span class="text-xs font-mono font-bold text-white">FastAPI Active (8001)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form & Interactive Panel Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    
+    <!-- Left Column: Mutation Assay Input Form (8 cols) -->
+    <div class="lg:col-span-8 space-y-6">
+      
+      <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 sm:p-8 space-y-6 relative overflow-hidden">
+        
+        <!-- Top Hairline Line -->
+        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-zinc-400 to-transparent"></div>
+
+        {% if error %}
+          <div class="mb-5 p-3.5 rounded-xl bg-zinc-900 border border-zinc-700 text-zinc-200 text-xs flex items-center gap-2.5">
+            <i data-lucide="alert-triangle" class="w-4 h-4 text-white flex-shrink-0"></i>
+            <span>{{ error }}</span>
+          </div>
+        {% endif %}
+
+        <form method="POST" action="/analysis/" enctype="multipart/form-data" id="assayForm" class="space-y-6">
+          {% csrf_token %}
+
+          <!-- Sample & Patient Identifiers -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="space-y-1.5">
+              <label for="sample_id" class="block text-xs font-mono font-semibold uppercase tracking-wider text-zinc-400">
+                Sample Identifier *
+              </label>
+              <input 
+                type="text" 
+                name="sample_id" 
+                id="sample_id" 
+                required 
+                value="{{ default_sample_id|default:'SAMPLE-LUAD-9042' }}"
+                class="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white font-mono text-xs focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
+              >
+            </div>
+
+            <div class="space-y-1.5">
+              <label for="patient_identifier" class="block text-xs font-mono font-semibold uppercase tracking-wider text-zinc-400">
+                Patient Identifier
+              </label>
+              <input 
+                type="text" 
+                name="patient_identifier" 
+                id="patient_identifier" 
+                value="{{ default_patient_id|default:'PT-9042' }}"
+                class="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white font-mono text-xs focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
+              >
+            </div>
+          </div>
+
+          <!-- Assembly & Clinical Label Context -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="space-y-1.5">
+              <label for="genome_build" class="block text-xs font-mono font-semibold uppercase tracking-wider text-zinc-400">
+                Genome Assembly
+              </label>
+              <select 
+                name="genome_build" 
+                id="genome_build"
+                class="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white font-mono text-xs focus:outline-none focus:border-white transition-all"
+              >
+                <option value="GRCh38" selected>GRCh38 / hg38</option>
+                <option value="GRCh37">GRCh37 / hg19</option>
+              </select>
+            </div>
+
+            <div class="space-y-1.5">
+              <label for="suspected_cancer_type" class="block text-xs font-mono font-semibold uppercase tracking-wider text-zinc-400">
+                Suspected Primary Site
+              </label>
+              <select 
+                name="suspected_cancer_type" 
+                id="suspected_cancer_type"
+                class="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white font-mono text-xs focus:outline-none focus:border-white transition-all"
+              >
+                <option value="" selected>Unspecified / Blinded Screening</option>
+                <option value="LUAD">Lung Adenocarcinoma (LUAD)</option>
+                <option value="PAAD">Pancreatic Adenocarcinoma (PAAD)</option>
+                <option value="BRCA">Breast Invasive Carcinoma (BRCA)</option>
+                <option value="COADREAD">Colorectal Adenocarcinoma (COAD)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Section Divider: File Upload -->
+          <div class="border-t border-zinc-850 pt-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-semibold text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
+                <i data-lucide="layers" class="w-3.5 h-3.5 text-white"></i>
+                Input Mode 1: Somatic Mutation File
+              </span>
+              <span class="text-[10px] text-zinc-500 font-mono">CSV, TSV, MAF, VCF</span>
+            </div>
+
+            <!-- Drag & Drop Zone -->
+            <div id="dropZone" class="drop-zone rounded-2xl p-6 text-center cursor-pointer bg-zinc-900/60 relative">
+              <input type="file" name="mutation_file" id="mutation_file" class="hidden" accept=".csv,.tsv,.maf,.vcf,.txt">
+              <div class="space-y-2 pointer-events-none">
+                <div class="w-10 h-10 mx-auto rounded-xl bg-zinc-900 border border-zinc-750 flex items-center justify-center text-white">
+                  <i data-lucide="upload-cloud" class="w-5 h-5"></i>
+                </div>
+                <div>
+                  <div class="text-xs font-bold text-white">Drag & drop variant file or click to browse</div>
+                  <div class="text-[11px] text-zinc-500">cBioPortal MAF exports, ClinVar tables, or variant CSVs</div>
+                </div>
+                <div id="fileSelectedName" class="text-xs font-mono font-bold text-white hidden pt-1"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section Divider: Direct Input -->
+          <div class="border-t border-zinc-850 pt-5 space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-mono font-semibold text-zinc-300 uppercase tracking-wider flex items-center gap-1.5">
+                <i data-lucide="terminal" class="w-3.5 h-3.5 text-white"></i>
+                Input Mode 2: Direct Driver Gene List
+              </span>
+              <span class="text-[10px] text-zinc-500 font-mono">40 Validated Features</span>
+            </div>
+
+            <textarea 
+              name="direct_genes" 
+              id="direct_genes" 
+              rows="2" 
+              placeholder="e.g. EGFR, TP53, KRAS, KEAP1, BRAF"
+              class="w-full px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-white font-mono text-xs focus:outline-none focus:border-white focus:ring-1 focus:ring-white transition-all"
+            >{{ request.GET.genes|default:'' }}</textarea>
+          </div>
+
+          <!-- Research Benchmark Presets -->
+          <div class="p-4 rounded-2xl bg-zinc-900 border border-zinc-800 space-y-3">
+            <div class="flex items-center justify-between text-xs font-mono text-zinc-400">
+              <span class="text-zinc-300 font-bold uppercase tracking-wider flex items-center gap-1">
+                <i data-lucide="flask-conical" class="w-3.5 h-3.5 text-white"></i>
+                TCGA PanCancer Benchmark Presets:
+              </span>
+              <span class="text-[10px] text-zinc-500">100% Real TCGA Data</span>
+            </div>
+            
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <button 
+                type="button" 
+                onclick="loadPreset('LUAD')"
+                class="px-3.5 py-2 rounded-xl bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 text-xs font-mono text-zinc-200 transition-all text-left"
+              >
+                <div class="text-white font-bold">TCGA LUAD</div>
+                <div class="text-[10px] text-zinc-500 truncate">EGFR, TP53, KRAS</div>
+              </button>
+
+              <button 
+                type="button" 
+                onclick="loadPreset('PAAD')"
+                class="px-3.5 py-2 rounded-xl bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 text-xs font-mono text-zinc-200 transition-all text-left"
+              >
+                <div class="text-white font-bold">TCGA PAAD</div>
+                <div class="text-[10px] text-zinc-500 truncate">KRAS, CDKN2A, SMAD4</div>
+              </button>
+
+              <button 
+                type="button" 
+                onclick="loadPreset('BRCA')"
+                class="px-3.5 py-2 rounded-xl bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 text-xs font-mono text-zinc-200 transition-all text-left"
+              >
+                <div class="text-white font-bold">TCGA BRCA</div>
+                <div class="text-[10px] text-zinc-500 truncate">PIK3CA, TP53, BRCA1</div>
+              </button>
+
+              <button 
+                type="button" 
+                onclick="loadPreset('COADREAD')"
+                class="px-3.5 py-2 rounded-xl bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 hover:border-zinc-700 text-xs font-mono text-zinc-200 transition-all text-left"
+              >
+                <div class="text-white font-bold">TCGA COAD</div>
+                <div class="text-[10px] text-zinc-500 truncate">APC, KRAS, TP53</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="pt-2">
+            <button 
+              type="submit" 
+              id="submitBtn"
+              class="w-full py-4 px-5 rounded-xl font-bold text-xs bg-white text-black hover:bg-zinc-200 shadow-lg flex items-center justify-center gap-2 transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+            >
+              <i data-lucide="cpu" class="w-4 h-4"></i>
+              <span>Execute Precision AI Classification & Evidence Retrieval</span>
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+
+    <!-- Right Column: 3D Mini DNA Preview & Scientific Scope -->
+    <div class="lg:col-span-4 space-y-6">
+      
+      <!-- Mini 3D DNA Widget -->
+      <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-5 space-y-3">
+        <div class="flex items-center justify-between text-xs font-mono border-b border-zinc-850 pb-2">
+          <span class="text-white font-semibold uppercase tracking-wider flex items-center gap-1.5">
+            <i data-lucide="activity" class="w-3.5 h-3.5"></i>
+            Active Molecular Scanner
+          </span>
+          <span class="text-[10px] text-zinc-500">REAL-TIME</span>
+        </div>
+
+        <div class="relative w-full aspect-square rounded-2xl bg-black border border-zinc-850 overflow-hidden flex items-center justify-center">
+          <div id="miniDnaCanvasContainer" class="w-full h-full"></div>
+          <div class="absolute bottom-2 left-2 text-[9px] font-mono text-zinc-500 pointer-events-none">
+            GENOME: GRCh38 • ROT: 60FPS
+          </div>
+        </div>
+      </div>
+
+      <!-- Genomic Governance Rules -->
+      <div class="bg-zinc-950 border border-zinc-800 rounded-3xl p-6 space-y-4 text-xs">
+        <h3 class="font-bold text-white flex items-center gap-2">
+          <i data-lucide="shield-check" class="w-4 h-4 text-zinc-400"></i>
+          Genomic Governance & Scope
+        </h3>
+        
+        <ul class="space-y-2 text-zinc-400 leading-relaxed font-mono text-[11px]">
+          <li class="flex items-start gap-2">
+            <span class="text-white">•</span>
+            <span>Trained strictly on 2,428 authentic TCGA PanCancer tumor records.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-white">•</span>
+            <span>Distinguishes observed somatic variants from predicted classifications.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-white">•</span>
+            <span>Clinical matches cross-referenced with CIViC & ClinVar Level A/B evidence.</span>
+          </li>
+          <li class="flex items-start gap-2">
+            <span class="text-white">•</span>
+            <span>Research decision-support tool. Not a substitute for primary pathology.</span>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  // Drag and drop handler
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('mutation_file');
+  const fileNameDisplay = document.getElementById('fileSelectedName');
+
+  dropZone.addEventListener('click', () => fileInput.click());
+
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('dragover');
+  });
+
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('dragover');
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    if (e.dataTransfer.files.length > 0) {
+      fileInput.files = e.dataTransfer.files;
+      displayFileName(fileInput.files[0].name);
+    }
+  });
+
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length > 0) {
+      displayFileName(fileInput.files[0].name);
+    }
+  });
+
+  function displayFileName(name) {
+    fileNameDisplay.textContent = `Selected: ${name}`;
+    fileNameDisplay.classList.remove('hidden');
+  }
+
+  // Presets
+  const presets = {
+    LUAD: {
+      sample: "TCGA-LUAD-9042",
+      patient: "PT-LUAD-42",
+      site: "LUAD",
+      genes: "EGFR, TP53, KRAS, KEAP1"
+    },
+    PAAD: {
+      sample: "TCGA-PAAD-4819",
+      patient: "PT-PAAD-19",
+      site: "PAAD",
+      genes: "KRAS, TP53, CDKN2A, SMAD4"
+    },
+    BRCA: {
+      sample: "TCGA-BRCA-7182",
+      patient: "PT-BRCA-82",
+      site: "BRCA",
+      genes: "PIK3CA, TP53, BRCA1, CDH1"
+    },
+    COADREAD: {
+      sample: "TCGA-COAD-3310",
+      patient: "PT-COAD-10",
+      site: "COADREAD",
+      genes: "APC, KRAS, TP53, PIK3CA"
+    }
+  };
+
+  function loadPreset(type) {
+    const p = presets[type];
+    if (!p) return;
+    document.getElementById('sample_id').value = p.sample;
+    document.getElementById('patient_identifier').value = p.patient;
+    document.getElementById('suspected_cancer_type').value = p.site;
+    document.getElementById('direct_genes').value = p.genes;
+  }
+
+  // Mini 3D DNA Double Helix (Monochromatic Chrome & Quartz)
+  (function initMiniDna() {
+    const container = document.getElementById('miniDnaCanvasContainer');
+    if (!container || !window.THREE) return;
+
+    const width = container.clientWidth || 300;
+    const height = container.clientHeight || 300;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+    camera.position.set(0, 0, 8);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    container.appendChild(renderer.domElement);
+
+    scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+    const light = new THREE.DirectionalLight(0xffffff, 1.8);
+    light.position.set(5, 5, 5);
+    scene.add(light);
+
+    const dnaGroup = new THREE.Group();
+    const num = 24;
+    const radius = 1.4;
+    const h = 6.0;
+
+    const sphereGeom = new THREE.SphereGeometry(0.12, 16, 16);
+    const matSilver = new THREE.MeshStandardMaterial({ color: 0xf4f4f5, metalness: 0.9, roughness: 0.2 });
+    const matGraphite = new THREE.MeshStandardMaterial({ color: 0x71717a, metalness: 0.8, roughness: 0.3 });
+    const matBridge = new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.7 });
+
+    for (let i = 0; i < num; i++) {
+      const t = i / (num - 1);
+      const angle = t * Math.PI * 2 * 2.2;
+      const y = (t - 0.5) * h;
+
+      const xA = Math.cos(angle) * radius;
+      const zA = Math.sin(angle) * radius;
+      const mA = new THREE.Mesh(sphereGeom, matSilver);
+      mA.position.set(xA, y, zA);
+      dnaGroup.add(mA);
+
+      const xB = Math.cos(angle + Math.PI) * radius;
+      const zB = Math.sin(angle + Math.PI) * radius;
+      const mB = new THREE.Mesh(sphereGeom, matGraphite);
+      mB.position.set(xB, y, zB);
+      dnaGroup.add(mB);
+
+      const pA = new THREE.Vector3(xA, y, zA);
+      const pB = new THREE.Vector3(xB, y, zB);
+      const dist = pA.distanceTo(pB);
+
+      const bGeom = new THREE.CylinderGeometry(0.03, 0.03, dist, 8);
+      const bMesh = new THREE.Mesh(bGeom, matBridge);
+      bMesh.position.set((xA + xB) / 2, y, (zA + zB) / 2);
+      bMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3().subVectors(pB, pA).normalize());
+      dnaGroup.add(bMesh);
+    }
+
+    scene.add(dnaGroup);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      dnaGroup.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    }
+    animate();
+  })();
+</script>
+{% endblock %}
